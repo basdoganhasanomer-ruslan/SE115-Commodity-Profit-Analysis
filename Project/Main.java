@@ -1,6 +1,6 @@
 // Main.java — Students version
 import java.io.*;
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
     static final int MONTHS = 12;
@@ -12,7 +12,46 @@ public class Main {
     
 
     // ======== REQUIRED METHOD LOAD DATA (Students fill this) ========
+    static int[][][] profits = new int[MONTHS][DAYS][COMMS];
+
     public static void loadData() {
+        for (int m = 0; m < MONTHS; m++) {
+
+                try {
+                    File file = new File("Data_Files/" + months[m] + ".txt");
+                    Scanner sc = new Scanner(file);
+
+                    while (sc.hasNextLine()) {
+
+                        String line = sc.nextLine();
+                        String[] parts = line.split(",");
+
+                        int day = Integer.parseInt(parts[0]) - 1;
+                        String commName = parts[1];
+                        int profit = Integer.parseInt(parts[2]);
+
+                        int commIndex = -1;
+                        for (int i = 0; i < COMMS; i++) {
+                            if (commodities[i].equals(commName)) {
+                                commIndex = i;
+                                break;
+                            }
+                        }
+
+                        if (day >= 0 && day < DAYS && commIndex != -1) {
+                            profits[m][day][commIndex] = profit;
+                        }
+                    }
+
+                    sc.close();
+
+                } catch (Exception e) {
+
+                }
+            }
+        }
+
+
     }
 
     // ======== 10 REQUIRED METHODS (Students fill these) ========
