@@ -61,7 +61,14 @@ public class Main {
     }
 
     public static int totalProfitOnDay(int month, int day) {
-        return 1234;
+        int d = day - 1;
+        int total = 0;
+
+        for (int c = 0; c < COMMS; c++) {
+            total += profits[month][d][c];
+        }
+
+        return total;
     }
 
     public static int commodityProfitInRange(String commodity, int from, int to) {
