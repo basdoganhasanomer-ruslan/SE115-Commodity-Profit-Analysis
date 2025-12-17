@@ -67,8 +67,7 @@ for (int c = 0; c < COMMS; c++) {
         for (int d = 0; d < DAYS; d++) {
             currentCommTotal += profits[month][d][c];
         }
-
-        if (currentCommTotal > maxProfit) {
+if (currentCommTotal > maxProfit) {
             maxProfit = currentCommTotal;
             bestComm = commodities[c];
         }
@@ -110,11 +109,53 @@ for (int c = 0; c < COMMS; c++) {
     }
 
     public static int bestDayOfMonth(int month) { 
-        return 1234; 
+         if (month < 0 || month >= MONTHS) {
+            return -1;
+        }
+        
+        int maxProfit = -2147483648;
+        int bestDay = 1;
+
+        for (int d = 0; d < DAYS; d++) {
+            int dailyTotal = 0;
+            for (int c = 0; c < COMMS; c++) {
+                dailyTotal += profits[month][d][c];
+            }
+            if (dailyTotal > maxProfit) {
+                maxProfit = dailyTotal;
+                bestDay = d + 1;
+            }
+        }
+        return bestDay;  
     }
     
     public static String bestMonthForCommodity(String comm) { 
-        return "DUMMY"; 
+        int commIndex = -1;
+            for (int i = 0; i < COMMS; i++) {
+                if (commodities[i].equals(comm)) {
+                    commIndex = i;
+                    break;
+                }
+            }
+
+            if (commIndex == -1) {
+                return "INVALID_COMMODITY";
+            }
+
+            int maxProfit = -2147483648;
+            String bestMonthName = "";
+
+            for (int m = 0; m < MONTHS; m++) {
+                int monthlyTotal = 0;
+                for (int d = 0; d < DAYS; d++) {
+                    monthlyTotal += profits[m][d][commIndex];
+                }
+                if (monthlyTotal > maxProfit) {
+                    maxProfit = monthlyTotal;
+                    bestMonthName = months[m];
+                }
+            }
+            return bestMonthName; 
     }
 
     public static int consecutiveLossDays(String comm) { 
