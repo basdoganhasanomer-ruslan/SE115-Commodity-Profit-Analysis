@@ -89,7 +89,24 @@ for (int c = 0; c < COMMS; c++) {
     }
 
     public static int commodityProfitInRange(String commodity, int from, int to) {
-        return 1234;
+        int commIndex = -1;
+        for (int i = 0; i < COMMS; i++) {
+            if (commodities[i].equals(commodity)) {
+                commIndex = i;
+                break;
+            }
+        }
+        if (commIndex == -1 || from < 1 || to > 28 || from > to) {
+            return -99999;
+        }
+        int totalRangeProfit = 0;
+        
+        for (int m = 0; m < MONTHS; m++) {
+            for (int d = from - 1; d <= to - 1; d++) {
+                totalRangeProfit += profits[m][d][commIndex];
+            }
+        }
+        return totalRangeProfit;
     }
 
     public static int bestDayOfMonth(int month) { 
