@@ -159,19 +159,120 @@ if (currentCommTotal > maxProfit) {
     }
 
     public static int consecutiveLossDays(String comm) { 
-        return 1234; 
+      int commIndex = -1;
+        for (int i = 0; i < COMMS; i++) {
+            if (commodities[i].equals(comm)) {
+                commIndex = i;
+                break;
+            }
+        }
+
+        if (commIndex == -1) {
+            return -1;
+        }
+
+        int maxStreak = 0;
+        int currentStreak = 0;
+
+
+        for (int m = 0; m < MONTHS; m++) {
+         for (int d = 0; d < DAYS; d++) {
+          if (profits[m][d][commIndex] < 0) {
+                    currentStreak++;
+
+                    if (currentStreak > maxStreak) {
+                        maxStreak = currentStreak;
+                    }
+                } else {
+
+                    currentStreak = 0;
+                }
+            }
+        }
+        return maxStreak;   
     }
     
     public static int daysAboveThreshold(String comm, int threshold) { 
-        return 1234; 
+    int commIndex = -1;
+        for (int i = 0; i < COMMS; i++) {
+            if (commodities[i].equals(comm)) {
+                commIndex = i;
+                break;
+            }
+        }
+
+        if (commIndex == -1) {
+            return -1;
+        }
+
+        int count = 0;
+        for (int m = 0; m < MONTHS; m++) {
+            for (int d = 0; d < DAYS; d++) {
+                if (profits[m][d][commIndex] > threshold) {
+                    count++;
+                }
+            }
+        }
+        return count; 
     }
 
     public static int biggestDailySwing(int month) { 
-        return 1234; 
+     if (month < 0 || month >= MONTHS) {
+            return -99999;
+        }
+
+        int[] dailyTotals = new int[DAYS];
+        for (int d = 0; d < DAYS; d++) {
+            int total = 0;
+            for (int c = 0; c < COMMS; c++) {
+                total += profits[month][d][c];
+            }
+            dailyTotals[d] = total;
+        }
+
+        int maxSwing = 0;
+
+        for (int i = 0; i < DAYS - 1; i++) {
+            int swing = dailyTotals[i] - dailyTotals[i+1];
+
+            if (swing < 0) {
+                swing = -swing;
+            }
+
+            if (swing > maxSwing) {
+                maxSwing = swing;
+            }
+        }
+        return maxSwing; 
     }
     
     public static String compareTwoCommodities(String c1, String c2) { 
-        return "DUMMY is better by 1234"; 
+     int idx1 = -1, idx2 = -1;
+
+        for (int i = 0; i < COMMS; i++) {
+            if (commodities[i].equals(c1)) idx1 = i;
+            if (commodities[i].equals(c2)) idx2 = i;
+        }
+
+        if (idx1 == -1 || idx2 == -1) {
+            return "INVALID_COMMODITY";
+        }
+
+        long total1 = 0, total2 = 0;
+        for (int m = 0; m < MONTHS; m++) {
+            for (int d = 0; d < DAYS; d++) {
+                total1 += profits[m][d][idx1];
+                total2 += profits[m][d][idx2];
+            }
+        }
+
+        if (total1 > total2) {
+            return c1 + " is better by " + (total1 - total2);
+        } else if (total2 > total1) {
+            return c2 + " is better by " + (total2 - total1);
+        } else {
+            return "Equal";
+        } 
     }
     
     public static String bestWeekOfMonth(int month) { 
