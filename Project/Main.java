@@ -15,40 +15,40 @@ public class Main {
     static int[][][] profits = new int[MONTHS][DAYS][COMMS];
 
     public static void loadData() {
-        for (int m = 0; m < MONTHS; m++) {
+        try {
+            for (int i = 0; i < MONTHS; i++) {
+                String filename = "Data_Files/" + months[i] + ".txt";
+                Scanner scanner = new Scanner(java.nio.file.Paths.get(filename));
 
-                try {
-                    File file = new File("Data_Files/" + months[m] + ".txt");
-                    Scanner sc = new Scanner(file);
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    if (line.trim().isEmpty())
+                        continue;
+                    if (line.startsWith("Day"))
+                        continue;
 
-                    while (sc.hasNextLine()) {
+                    String[] parts = line.split(",");
+                    int day = Integer.parseInt(parts[0].trim());
+                    String commodityName = parts[1].trim();
+                    int profit = Integer.parseInt(parts[2].trim());
 
-                        String line = sc.nextLine();
-                        String[] parts = line.split(",");
-
-                        int day = Integer.parseInt(parts[0]) - 1;
-                        String commName = parts[1];
-                        int profit = Integer.parseInt(parts[2]);
-
-                        int commIndex = -1;
-                        for (int i = 0; i < COMMS; i++) {
-                            if (commodities[i].equals(commName)) {
-                                commIndex = i;
-                                break;
-                            }
-                        }
-
-                        if (day >= 0 && day < DAYS && commIndex != -1) {
-                            profits[m][day][commIndex] = profit;
+                    int commIndex = -1;
+                    for (int c = 0; c < COMMS; c++) {
+                        if (commodities[c].equals(commodityName)) {
+                            commIndex = c;
+                            break;
                         }
                     }
 
-                    sc.close();
-
-                } catch (Exception e) {
-
+                    if (commIndex != -1) {
+                        profits[i][day - 1][commIndex] = profit;
+                    }
                 }
+                scanner.close();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         }
 
 
@@ -276,7 +276,28 @@ if (currentCommTotal > maxProfit) {
     }
     
     public static String bestWeekOfMonth(int month) { 
-        return "DUMMY"; 
+         if (month < 0 || month >= MONTHS) {
+            return "INVALID_MONTH";
+        }
+
+        int maxWeekProfit = -2147483648;
+        int bestWeekNum = 1;
+
+        for (int w = 0; w < 4; w++) {
+            int weekTotal = 0;
+
+            for (int d = w * 7; d < (w + 1) * 7; d++) {
+                for (int c = 0; c < COMMS; c++) {
+                    weekTotal += profits[month][d][c];
+                }
+            }
+
+            if (weekTotal > maxWeekProfit) {
+                maxWeekProfit = weekTotal;
+                bestWeekNum = w + 1;
+            }
+        }
+        return "Week " + bestWeekNum;
     }
 
     public static void main(String[] args) {
